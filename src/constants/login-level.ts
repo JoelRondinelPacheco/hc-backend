@@ -1,0 +1,5 @@
+export enum LOGINLEVEL {
+  NEW = 'NEW',
+  ACCESS_TOKEN = 'ACCES_TOKEN',
+  REFRESH_TOKEN = 'REFRESH_TOKEN',
+}
