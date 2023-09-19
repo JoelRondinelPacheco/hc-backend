@@ -14,7 +14,7 @@ import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { RolesAccess } from 'src/auth/decorators/roleaccess.decorator';
 
 //@RolesAccess('ADMIN')
-//@UseGuards(AuthGuard)
+@UseGuards(AuthGuard)
 @Controller('admins')
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}

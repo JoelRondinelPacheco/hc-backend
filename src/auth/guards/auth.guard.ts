@@ -26,19 +26,21 @@ export class AuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext) {
     try {
       const req = context.switchToHttp().getRequest<Request>();
-      const headerToken = req.header('token');
-      if (!headerToken || Array.isArray(headerToken)) {
-        throw new UnauthorizedException('Invalid token');
+      const headerAuth = req.header('aT');
+      if (!headerAuth || Array.isArray(headerAuth)) {
+        throw new UnauthorizedException({ message: 'Invalid token' });
       }
-      const tokenBearer = headerToken.split(' ')[0];
-      if (tokenBearer !== 'Bearer') {
-        throw new UnauthorizedException('Invalid token');
+
+      const auth = headerAuth.split(' ')[0];
+      console.log(auth);
+      if (auth !== 'Auth') {
+        throw new UnauthorizedException({ message: 'Invalid token' });
       }
-      const token = headerToken.split(' ')[1];
-      const verifyAT = this.tokenService.verifyAccessToken(token);
+      const tokenAuth = headerAuth.split(' ')[1];
+      const verifyAT = this.tokenService.verifyAccessToken(tokenAuth);
       if (typeof verifyAT === 'string') {
         if (verifyAT === 'jwt expired') {
-          throw new UnauthorizedException('Token expired');
+          throw new UnauthorizedException({ message: 'Token expired' });
         }
       }
 
@@ -67,7 +69,9 @@ export class AuthGuard implements CanActivate {
           (verifyAT as TokenInfo).sub,
         );
         if (employee) {
-          if (userAccess === ROLESAUTH.EMPLOYEE) return true;
+          if (String(userAccess) === ROLESAUTH.EMPLOYEE) {
+            return true;
+          }
 
           if (userAccess === ROLESAUTH.TICKETEMPLOYEE) return true;
           if (userAccess === ROLESAUTH.SALEEMPLOYEE) return true;

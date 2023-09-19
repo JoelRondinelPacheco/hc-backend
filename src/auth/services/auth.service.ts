@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { AdminService } from 'src/admins/services/admin.service';
 import { EmployeesService } from 'src/employees/services/employees.service';
@@ -8,7 +8,7 @@ import { AdminEntity } from 'src/admins/entities/admin.entity';
 import { TokenService } from './token.service';
 import { Request } from 'express';
 import { EmployeeEntity } from 'src/employees/entities/employee.entity';
-import { TokenInfo } from '../interfaces/token';
+import { TokenI, TokenInfo } from '../interfaces/token';
 import { ROLES } from 'src/constants/roles';
 import {
   InfoAdminPass,
@@ -83,6 +83,8 @@ export class AuthService {
           id: admin.id,
           firstName: admin.firstName,
           lastName: admin.lastName,
+          //cambio
+          birthday: admin.birthday,
           email: admin.email,
           role: admin.role,
           gameId: '',
@@ -95,6 +97,8 @@ export class AuthService {
           id: employee.id,
           firstName: employee.firstName,
           lastName: employee.lastName,
+          //cambio
+          birthday: employee.birthday,
           email: employee.email,
           role: employee.role,
           gameId: employee.game.id,
@@ -114,6 +118,8 @@ export class AuthService {
         id: userInfo.id,
         firstName: userInfo.firstName,
         lastName: userInfo.lastName,
+        //cambio
+        birthday: userInfo.birthday,
         role: userInfo.role,
         email: userInfo.email,
         gameId: userInfo.gameId,
@@ -127,19 +133,36 @@ export class AuthService {
   public async setUserInfo(info: TokenInfo): Promise<LoginEmployeeATResDTO> {
     try {
       if (info.role === ROLES.ADMIN) {
-        const admin = await this.adminService.getAdminByEmail(info.sub);
+        const admin = await this.adminService.getAdminById(info.sub);
+        if (!admin) {
+          throw new ErrorManager({
+            type: 'UNAUTHORIZED',
+            message: 'admin null',
+          });
+        }
         const userfinal: LoginEmployeeATResDTO = {
           id: admin.id,
           firstName: admin.firstName,
           lastName: admin.lastName,
           role: admin.role,
           email: admin.email,
+          birthday: admin.birthday,
           gameId: '',
         };
         return userfinal;
       }
       if (info.role === ROLES.EMPLOYEE) {
-        return await this.employeesService.getEmployeeById(info.sub);
+        const employee = await this.employeesService.getEmployeeById(info.sub);
+        const userFinal: LoginEmployeeATResDTO = {
+          id: employee.id,
+          firstName: employee.firstName,
+          lastName: employee.lastName,
+          role: employee.role,
+          email: employee.email,
+          birthday: employee.birthday,
+          gameId: employee.gameId,
+        };
+        return userFinal;
       }
     } catch (error) {
       throw error;
@@ -153,7 +176,14 @@ export class AuthService {
 
       const tokenInfo: TokenInfo = this.tokenService.tokenInfo(refreshToken);
 
+      if (tokenInfo === null) {
+        throw new ErrorManager({
+          type: 'UNAUTHORIZED',
+          message: 'user info null',
+        });
+      }
       const userInfo = await this.setUserInfo(tokenInfo);
+
       const attoken = this.tokenService.generateAccessToken(userInfo);
 
       return { accessToken: attoken, user: userInfo };
@@ -163,6 +193,22 @@ export class AuthService {
       } else {
         throw error;
       }
+    }
+  }
+
+  async newAccessToken(req: Request): Promise<TokenI> {
+    try {
+      const headerRefresh = req.header('token');
+
+      const refreshToken = headerRefresh.split(' ')[1];
+      const tokenInfo: TokenInfo = this.tokenService.tokenInfo(refreshToken);
+
+      const userInfo = await this.setUserInfo(tokenInfo);
+
+      const accessToken = this.tokenService.generateAccessToken(userInfo);
+      return accessToken;
+    } catch (error) {
+      throw error;
     }
   }
 }

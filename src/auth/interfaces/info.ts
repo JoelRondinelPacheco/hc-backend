@@ -5,6 +5,7 @@ export interface LoginAdminATResDTO {
   id: string;
   firstName: string;
   lastName: string;
+  birthday: Date;
   email: string;
   role: ROLES;
 }

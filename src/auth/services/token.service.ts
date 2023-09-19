@@ -116,6 +116,7 @@ export class TokenService {
 
   tokenInfo(token: string): TokenInfo {
     const decode = jwt.decode(token) as DecodedTokenInfo;
+    console.log(decode);
 
     return {
       sub: decode.sub,

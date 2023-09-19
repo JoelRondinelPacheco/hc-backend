@@ -1,11 +1,11 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Get, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 import { LoginEPDTO } from '../dto/login.dto';
 import { Login } from '../decorators/login.decorator';
 import { Request } from 'express';
 import { LoginGuard } from '../guards/login.guard';
-import { LoginAccess } from '../decorators/login-access.decorator';
 import { LoginRefresh } from '../decorators/login-refresh.decorator';
+import { LoginAccess } from '../decorators/login-access.decorator';
 
 @Controller('auth')
 @UseGuards(LoginGuard)
@@ -22,5 +22,11 @@ export class AuthController {
   @Post('refresh')
   public async loginWithRefreshToken(@Req() req: Request) {
     return await this.authService.loginWithRefreshToken(req);
+  }
+
+  @LoginRefresh()
+  @Get('access')
+  public async newAccessToken(@Req() req: Request) {
+    return await this.authService.newAccessToken(req);
   }
 }

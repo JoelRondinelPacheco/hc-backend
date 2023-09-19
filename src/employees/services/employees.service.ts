@@ -68,6 +68,7 @@ export class EmployeesService {
         id: employee.id,
         firstName: employee.firstName,
         lastName: employee.lastName,
+        birthday: employee.birthday,
         email: employee.email,
         role: employee.role,
         game: employee.game,

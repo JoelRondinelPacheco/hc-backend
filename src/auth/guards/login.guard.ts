@@ -33,10 +33,10 @@ export class LoginGuard implements CanActivate {
       }
       const tokenBearer = headerToken.split(' ')[0];
       if (tokenBearer !== 'Bearer') {
-        throw new UnauthorizedException('Invalid token');
+        throw new UnauthorizedException('Invalid token login');
       }
       const token = headerToken.split(' ')[1];
-
+      /*
       if (loginLevel === LOGINLEVEL.ACCESS_TOKEN) {
         const verifyAT = this.tokenService.verifyAccessToken(token);
         if (typeof verifyAT === 'string') {
@@ -46,7 +46,7 @@ export class LoginGuard implements CanActivate {
         }
         return true;
       }
-
+*/
       if (loginLevel === LOGINLEVEL.REFRESH_TOKEN) {
         const tokenDB = await this.tokenService.getTokenDB(token);
 

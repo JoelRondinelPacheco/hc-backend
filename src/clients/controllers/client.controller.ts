@@ -13,11 +13,11 @@ import { ClientService } from '../services/client.service';
 import { RolesAccess } from 'src/auth/decorators/roleaccess.decorator';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 
-//@UseGuards(AuthGuard)
+@UseGuards(AuthGuard)
 @Controller('clients')
 export class ClientController {
   constructor(private readonly clientService: ClientService) {}
-  // @RolesAccess('ADMIN')
+  @RolesAccess('ADMIN')
   @Post('agregar')
   public async createClient(@Body() body: ClientDTO) {
     return await this.clientService.createClient(body);
@@ -29,7 +29,7 @@ export class ClientController {
   }
   //ADMIN Y EMPLOYEE
 
-  //@RolesAccess('EMPLOYEE')
+  @RolesAccess('EMPLOYEE')
   @Get('all')
   public async getAllClients() {
     return await this.clientService.getAllClients();
