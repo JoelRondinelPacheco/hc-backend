@@ -12,29 +12,29 @@ import { CreateSaleDTO, finishSaleDTO } from '../dto/sale.dto';
 import { RolesAccess } from 'src/auth/decorators/roleaccess.decorator';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 
-@UseGuards(AuthGuard)
+//@UseGuards(AuthGuard)
 @Controller('sales')
 export class SaleController {
   constructor(private readonly saleService: SaleService) {}
 
-  @RolesAccess('SALEEMPLOYEE')
+  //@RolesAccess('SALEEMPLOYEE')
   @Post('agregar')
   public async createSale(@Body() body: CreateSaleDTO) {
     return await this.saleService.createSale(body);
   }
 
-  @RolesAccess('ADMIN')
+  //@RolesAccess('ADMIN')
   @Get('all')
   public async getAllSales() {
     return await this.saleService.getAllSales();
   }
 
-  @Get(':saleId')
+  //@Get(':saleId')
   public async getSaleById(@Param('saleId') saleId: string) {
     return await this.saleService.getSaleById(saleId);
   }
 
-  @RolesAccess('SALEOWNER')
+  //@RolesAccess('SALEOWNER')
   @Put('edit/:saleId')
   public async finishSale(
     @Param('saleId') saleId: string,

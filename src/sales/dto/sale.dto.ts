@@ -7,6 +7,7 @@ export class CreateSaleDTO {
 }
 
 export class CreateSaleResDTO extends CreateSaleDTO {
+  id: string;
   @IsNotEmpty()
   isCompleted: boolean;
 }

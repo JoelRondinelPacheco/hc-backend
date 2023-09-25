@@ -18,6 +18,7 @@ export class SaleService {
 
   public async createSale(body: CreateSaleDTO): Promise<CreateSaleResDTO> {
     try {
+      console.log(body);
       const sale = await this.saleRepository.save(body);
       if (!sale) {
         throw new ErrorManager({
@@ -25,7 +26,11 @@ export class SaleService {
           message: 'No se pudo crear la venta',
         });
       }
-      return sale;
+      return {
+        id: sale.id,
+        employee: sale.employee,
+        isCompleted: sale.isCompleted,
+      };
     } catch (error) {
       throw ErrorManager.createSignatureError(error.message);
     }
