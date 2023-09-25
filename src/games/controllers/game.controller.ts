@@ -23,13 +23,13 @@ export class GameController {
     return await this.gameService.createGame(body);
   }
 
-  // @RolesAccess('ADMIN')
+  //  @RolesAccess('ADMIN')
   @Get('all')
   public async getAllGames() {
     return await this.gameService.getAllGames();
   }
 
-  //@RolesAccess('EMPLOYEE')
+  // @RolesAccess('EMPLOYEE')
   @Get('game/:gameId')
   public async getGameById(@Param('gameId') gameId: string) {
     return await this.gameService.getGameById(gameId);
